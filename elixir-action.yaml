@@ -1,0 +1,31 @@
+# .github/workflows/postgres.yml
+name: Run Dat
+on: push
+jobs:
+  fart-job:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: toshokan_test 
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+      - name: Setup beam
+        uses: erlef/setup-beam@v1
+        with:
+          otp-version: 25.2.2
+          elixir-version: 1.14.3
+      - name: Deps yall
+        run: mix deps.get
+      - name: compile yall
+        run: mix compile --force
+      - name: test yall
+        run: mix test
